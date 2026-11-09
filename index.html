@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>บ้านผีไทย ผจญภัยชนิดคำ</title>
+<style>
+:root{
+  --night:#151322;
+  --panel:#252139;
+  --panel2:#332d4b;
+  --ink:#fff9ed;
+  --muted:#d0c9df;
+  --gold:#ffdc89;
+  --pink:#ff9fbd;
+  --mint:#a8f0ca;
+  --line:#5b506e;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--ink);
+  font-family:system-ui,"Noto Sans Thai",sans-serif;
+  background:
+    radial-gradient(ellipse at 12% 10%,#4c466a 0,transparent 30%),
+    radial-gradient(ellipse at 90% 78%,#244b54 0,transparent 34%),
+    linear-gradient(145deg,#11101d,#1d1930 60%,#111b24);
+}
+button{font:inherit}
+.app{width:min(980px,100%);margin:auto;padding:14px}
+header,.top,.actions{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+header{margin-bottom:13px;font-weight:900}
+.brand{font-size:1.04rem}
+.pill{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:8px 13px;
+  white-space:nowrap;
+}
+.card{
+  background:#24203bf2;
+  border:1px solid #625879;
+  border-radius:22px;
+  padding:clamp(17px,4vw,30px);
+  box-shadow:0 16px 50px #0007;
+}
+.center{text-align:center}
+h1{font-size:clamp(1.7rem,6vw,2.4rem);line-height:1.35;margin:8px 0}
+h2{line-height:1.4;margin:8px 0 14px}
+h3{line-height:1.5;color:var(--gold);margin:0 0 7px}
+p,li{line-height:1.85}
+.muted{color:var(--muted)}
+.hero{
+  font-size:4.5rem;
+  animation:float 2.4s ease-in-out infinite;
+  filter:drop-shadow(0 0 14px #ff9fbd);
+}
+@keyframes float{50%{transform:translateY(-9px) rotate(3deg)}}
+.button{
+  border:0;border-radius:13px;padding:11px 16px;
+  background:var(--pink);color:#28162d;font-weight:900;
+  cursor:pointer;box-shadow:0 4px 0 #b7567e;
+}
+.button:hover{filter:brightness(1.08)}
+.button:active{transform:translateY(2px);box-shadow:0 2px 0 #b7567e}
+.button.secondary{background:#413a59;color:var(--ink);box-shadow:0 4px 0 #29233d}
+.button:disabled{opacity:.45;cursor:not-allowed}
+.introbox{max-width:740px;margin:12px auto 20px;line-height:1.9}
+.map{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(195px,1fr));
+  gap:11px;
+  margin-top:19px;
+}
+.room{
+  position:relative;
+  min-height:165px;
+  padding:14px 12px;
+  text-align:center;
+  color:var(--ink);
+  background:linear-gradient(145deg,#39324f,#28233f);
+  border:1px solid #655a79;
+  border-radius:19px;
+  cursor:pointer;
+  transition:transform .18s,border-color .18s,box-shadow .18s;
+  overflow:hidden;
+}
+.room::after{
+  content:"✦";
+  position:absolute;
+  right:10px;
+  bottom:1px;
+  color:#ffdc8933;
+  font-size:2.4rem;
+  pointer-events:none;
+}
+.room:hover{
+  transform:translateY(-4px);
+  border-color:var(--gold);
+  box-shadow:0 9px 24px #0006;
+}
+.room-number{
+  position:absolute;top:8px;left:8px;
+  padding:2px 9px;border-radius:99px;
+  color:#241a32;background:var(--gold);font-weight:900;
+}
+.room-ghost{
+  display:block;font-size:2.7rem;margin:5px 0 3px;
+  filter:drop-shadow(0 0 8px #ffb8d2);
+}
+.room-name{display:block;font-weight:900;font-size:1rem}
+.room-job{
+  display:block;margin-top:5px;color:var(--muted);
+  font-size:.86rem;line-height:1.5;
+}
+.room-status{display:block;margin-top:7px;color:var(--mint);font-size:.8rem}
+.progress{
+  height:10px;background:#423b54;border-radius:99px;
+  overflow:hidden;margin:10px 0 18px;
+}
+.progress div{
+  height:100%;width:0;
+  background:linear-gradient(90deg,var(--mint),var(--gold),var(--pink));
+  transition:width .25s;
+}
+.teacher{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px;background:#322b48;border:1px solid #574c6d;
+  border-radius:15px;margin-bottom:14px;
+}
+.teacher-face{font-size:2.6rem;line-height:1.2}
+.teacher p{margin:2px 0;line-height:1.7}
+.pagebox{
+  background:#302a49;border:1px solid #514866;
+  border-radius:16px;padding:17px;line-height:1.9;
+}
+.pagebox ul{padding-left:23px}
+.example{
+  background:#201c34;border-left:4px solid var(--gold);
+  padding:11px 14px;border-radius:9px;margin:12px 0;
+}
+.analysis{
+  background:#203b3a;border-left:4px solid var(--mint);
+  padding:11px 14px;border-radius:9px;margin:12px 0;
+}
+.note{
+  background:#4a3c27;border-left:4px solid var(--gold);
+  padding:11px 14px;border-radius:9px;margin:12px 0;
+}
+.actions{margin-top:16px;flex-wrap:wrap}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.option{
+  background:var(--panel2);border:2px solid var(--line);
+  color:var(--ink);border-radius:12px;padding:12px;
+  text-align:left;cursor:pointer;
+}
+.option:hover{border-color:var(--pink)}
+.option:disabled{cursor:default}
+.option.good{border-color:var(--mint);background:#234235}
+.option.bad{border-color:#ff8a9b;background:#512d41}
+.feedback{
+  display:none;margin-top:13px;padding:12px 14px;
+  border-radius:12px;line-height:1.8;
+}
+.feedback.show{display:block}
+.feedback.good{background:#234235;color:#dcffea}
+.feedback.bad{background:#512d41;color:#ffe1e7}
+.question{font-size:1.12rem;font-weight:850;line-height:1.75}
+[hidden]{display:none!important}
+@media(max-width:560px){
+  .app{padding:10px}
+  .brand{max-width:195px}
+  header{align-items:flex-start}
+  .options{grid-template-columns:1fr}
+  .actions .button{width:100%}
+}
+</style>
+</head>
+<body>
+<main class="app">
+<header>
+  <div class="brand">🏚️ บ้านผีไทย ผจญภัยชนิดคำ</div>
+  <div class="pill">📚 เรียนแล้ว <span id="learned">0</span>/12 ห้อง</div>
+</header>
+
+<section id="home" class="card center">
+  <div class="hero">👻</div>
+  <h1>บ้านผีไทยกับห้องลับชนิดคำ</h1>
+  <p class="introbox">
+    คืนนี้ผีน้อยทั้ง 12 ตนชวนมาเปิดห้องเรียนในเรือนไทยเก่า
+    เลือกห้องที่อยากเรียนได้ตามใจ อ่านความรู้และตัวอย่างก่อน
+    แล้วค่อยเลือกทำภารกิจทบทวนกับผีน้อย
+  </p>
+  <button class="button" id="enter">เปิดประตูบ้านผี</button>
+</section>
+
+<section id="mapScreen" class="card" hidden>
+  <div class="top">
+    <div>
+      <h2>🗺️ แผนที่บ้านผีไทย</h2>
+      <div class="muted">เลือกห้องไหนก่อนก็ได้ แตะการ์ดเพื่อเข้าเรียน</div>
+    </div>
+    <button class="button secondary" id="mapHome">หน้าแรก</button>
+  </div>
+  <div class="map" id="roomMap"></div>
+</section>
+
+<section id="lessonScreen" class="card" hidden>
+  <div class="top">
+    <b id="lessonRoom"></b>
+    <button class="button secondary" id="backMap">กลับแผนที่</button>
+  </div>
+  <div class="progress"><div id="lessonProgress"></div></div>
+  <div class="teacher">
+    <div class="teacher-face" id="teacherFace">👻</div>
+    <div><b id="teacherName">ผีน้อยผู้สอน</b><p id="teacherText">มาเรียนรู้ชนิดคำด้วยกันนะ</p></div>
+  </div>
+  <h2 id="lessonTitle"></h2>
+  <article class="pagebox" id="pageContent"></article>
+  <div class="actions">
+    <button class="button secondary" id="previousPage">← ย้อนกลับ</button>
+    <span class="muted" id="pageNumber"></span>
+    <button class="button" id="nextPage">หน้าถัดไป →</button>
+  </div>
+</section>
+
+<section id="quizScreen" class="card" hidden>
+  <div class="top">
+    <b id="quizRoom"></b>
+    <button class="button secondary" id="quizMap">กลับแผนที่</button>
+  </div>
+  <div class="teacher">
+    <div class="teacher-face">👻</div>
+    <div><b>ภารกิจเสริมของผีน้อย</b><p>ใช้ความรู้จากบทเรียนที่เพิ่งอ่านมาตอบคำถาม</p></div>
+  </div>
+  <div class="question" id="question"></div>
+  <div class="options" id="options"></div>
+  <div id="feedback" class="feedback" aria-live="polite"></div>
+  <div class="actions">
+    <span class="muted">ตอบผิดก็อ่านเฉลยแล้วลองเรียนห้องอื่นต่อได้</span>
+    <button class="button" id="nextQuestion" hidden>กลับแผนที่ →</button>
+  </div>
+</section>
+</main>
+
+<script>
+const rooms = [
+{
+name:"คำนาม",ghost:"👻",ghostName:"ผีแม่ศรีเรือน",
+tag:"เรียกชื่อคน สัตว์ สิ่งของ สถานที่ และความคิด",
+pages:[
+{title:"คำนามคืออะไร?",body:`<p><b>คำนาม</b> คือคำที่ใช้เรียกชื่อบุคคล สัตว์ วัตถุ สิ่งของ สภาพธรรมชาติ สถานที่ ความคิด ความเชื่อ และค่านิยม เป็นคำที่ใช้กล่าวถึงสิ่งต่าง ๆ ที่เราต้องการสื่อสาร</p><div class="example"><b>ตัวอย่าง:</b> ครู, แมว, โต๊ะ, ฝน, โรงเรียน, ความรัก, ความเชื่อ</div><div class="analysis"><b>วิธีสังเกต:</b> ลองถามว่า “คำนี้ใช้เรียกชื่ออะไร?” ถ้าเป็นชื่อคน สัตว์ สิ่งของ สถานที่ หรือแนวคิด ก็อาจเป็นคำนาม ต้องดูหน้าที่ในประโยคประกอบด้วย</div>`},
+{title:"คำนามสามัญและคำนามวิสามัญ",body:`<p><b>คำนามสามัญ</b> ใช้เรียกสิ่งต่าง ๆ โดยทั่วไป ไม่ได้ระบุชื่อเฉพาะ เช่น คน ครู นักเรียน สุนัข หนังสือ โรงเรียน บ้าน</p><p><b>คำนามวิสามัญ</b> เป็นชื่อเฉพาะที่ตั้งขึ้นเพื่อเรียกบุคคล สถานที่ หรือสิ่งใดสิ่งหนึ่ง ให้แตกต่างจากสิ่งอื่น</p><div class="example"><b>ประโยค:</b><br>• นักเรียนกำลังอ่านหนังสือ — “นักเรียน” และ “หนังสือ” เป็นคำนามสามัญ<br>• มริสาเป็นนักเรียน — “มริสา” เป็นชื่อเฉพาะ<br>• จังหวัดอุดรธานีมีสถานที่ท่องเที่ยว — “อุดรธานี” เป็นชื่อเฉพาะ</div><div class="note">คำนามสามัญอาจมีความหมายกว้างหรือแคบ เช่น ผลไม้ → มะม่วง → มะม่วงฟ้าลั่น</div>`},
+{title:"คำลักษณนาม",body:`<p><b>คำลักษณนาม</b> ใช้บอกลักษณะของคำนามหรือกริยา ช่วยให้เข้าใจลักษณะ จำนวน หรือกลุ่มของสิ่งที่กล่าวถึงได้ชัดขึ้น</p><ul><li><b>บอกลักษณะสิ่งของ:</b> บ้าน 1 <b>หลัง</b>, เก้าอี้ 10 <b>ตัว</b>, กระดาษ 1 <b>แผ่น</b></li><li><b>บอกกลุ่มหรือหมู่:</b> ทหาร 3 <b>กอง</b>, <b>โขลง</b>ช้าง, <b>ฝูง</b>ผึ้ง, <b>ฝูง</b>นก</li><li><b>บอกลักษณะของกริยา:</b> ขอหยุด<strong>ที</strong>, ขอ<strong>กอดที</strong>, ช่วยรอ<strong>สักครู่</strong></li></ul><div class="analysis">ใน “กระดาษ 1 แผ่น” คำว่า “แผ่น” ช่วยบอกลักษณะการนับกระดาษ</div>`},
+{title:"คำอาการนาม",body:`<p><b>คำอาการนาม</b> เป็นคำนามนามธรรม กล่าวถึงอาการ การกระทำ สภาพ หรือคุณลักษณะ ไม่ใช่สิ่งของที่จับต้องได้โดยตรง มักเกิดจากการเติม <b>การ</b> หรือ <b>ความ</b> ไว้ข้างหน้า</p><ul><li><b>การ</b> มักใช้กับคำกริยาที่แสดงอาการหรือการกระทำ เช่น การกิน การเดิน การนอน การเรียน การทำงาน</li><li><b>ความ</b> มักใช้กับสภาพ อารมณ์ ความรู้สึก หรือคุณลักษณะ เช่น ความรัก ความตาย ความโกรธ ความดี ความงาม</li></ul><div class="example"><b>ประโยค:</b> การออกกำลังกายทำให้ร่างกายแข็งแรง • ความรักทำให้มนุษย์มีความสุข</div><div class="analysis">“การออกกำลังกาย” กล่าวถึงการกระทำ ส่วน “ความรัก” กล่าวถึงความรู้สึก ทั้งคู่เป็นคำนามนามธรรม</div>`}
+],
+quiz:{q:"คำว่า “ประเทศไทย” ในประโยค “ประเทศไทยมีวัฒนธรรมหลากหลาย” เป็นคำนามชนิดใด?",options:["คำนามสามัญ","คำนามวิสามัญ","คำลักษณนาม","คำอาการนาม"],answer:1,explain:"ประเทศไทยเป็นชื่อเฉพาะของประเทศ จึงเป็นคำนามวิสามัญ"}
+},
+{
+name:"คำสรรพนาม",ghost:"🪞",ghostName:"ผีกระจก",
+tag:"ใช้แทนคำนาม เพื่อไม่กล่าวซ้ำ",
+pages:[
+{title:"คำสรรพนามคืออะไร?",body:`<p><b>คำสรรพนาม</b> คือคำที่ใช้แทนคำนาม เพื่อไม่ต้องกล่าวถึงคำนามเดิมซ้ำ ๆ ทำให้การสื่อสารกระชับ</p><div class="example">มะลิเป็นนักเรียน มะลิขยัน → มะลิเป็นนักเรียน <b>เธอ</b>ขยัน</div><div class="analysis">คำว่า “เธอ” ใช้แทน “มะลิ” จึงเป็นคำสรรพนาม</div>`},
+{title:"บุรุษสรรพนาม",body:`<p><b>บุรุษสรรพนาม</b> ใช้แทนบุคคล แบ่งเป็น 3 บุรุษ</p><ul><li><b>บุรุษที่ 1 ผู้พูด:</b> ผม ฉัน ข้าพเจ้า ข้า หม่อมฉัน กู ตู</li><li><b>บุรุษที่ 2 ผู้ฟัง:</b> คุณ เธอ ท่าน ฝ่าพระบาท มึง</li><li><b>บุรุษที่ 3 ผู้ที่กล่าวถึง:</b> เขา ท่าน เธอ มัน พระองค์</li></ul><div class="example">ฉันกำลังอ่านหนังสือ (ผู้พูด) • คุณต้องการอะไร (ผู้ฟัง) • เขากำลังทำงาน (ผู้ที่กล่าวถึง)</div><div class="note">การเลือกใช้สรรพนามขึ้นกับผู้พูด ผู้ฟัง ความสุภาพ และสถานการณ์</div>`},
+{title:"สรรพนามถามและชี้เฉพาะ",body:`<p><b>สรรพนามถาม</b> ใช้ถามถึงบุคคล สิ่งของ หรือสถานที่ ได้แก่ <b>ใคร อะไร ไหน</b></p><div class="example">ใครเป็นคนเขียนหนังสือเล่มนี้? • ลูกทำอะไรอยู่? • กระเป๋าอยู่ไหน?</div><p><b>สรรพนามชี้เฉพาะ</b> ใช้บอกระยะใกล้หรือไกล ได้แก่ <b>นี่ นั่น โน่น นู่น นี้ นั้น โน้น นู้น</b></p><div class="example">นี่คือหนังสือของฉัน • นั่นเป็นบ้านของคุณครู • โน่นคือภูเขาที่อยู่ไกล</div>`},
+{title:"สรรพนามไม่ชี้เฉพาะและแยกฝ่าย",body:`<p><b>สรรพนามไม่ชี้เฉพาะ</b> ไม่กำหนดแน่นอนว่าเป็นบุคคล สิ่งของ หรือสถานที่ใด เช่น ใคร อะไร ไหน</p><div class="example">เขาไม่ชอบใครเลย • เธอจะพูดอะไรก็ช่าง • ใครจะไปก็ได้ • ฉันจะไปที่ไหนก็ได้</div><p><b>สรรพนามแยกฝ่าย</b> แสดงว่ามีหลายส่วนหรือหลายฝ่าย ได้แก่ <b>ต่าง บ้าง กัน</b></p><div class="example">ชาวนาต่างเกี่ยวข้าว • นักเรียนบ้างก็เล่น บ้างก็เรียน • ต่างคนต่างทำงาน</div><div class="note">คำว่า “ใคร อะไร ไหน” อาจเป็นคำถามหรือไม่ชี้เฉพาะ ต้องพิจารณาความหมายและหน้าที่ในประโยค</div>`}
+],
+quiz:{q:"ในประโยค “ใครจะไปก็ได้” คำว่า “ใคร” เป็นสรรพนามชนิดใด?",options:["สรรพนามถาม","สรรพนามชี้เฉพาะ","สรรพนามไม่ชี้เฉพาะ","สรรพนามแยกฝ่าย"],answer:2,explain:"ประโยคนี้ไม่ได้ถามว่าใคร แต่หมายถึงบุคคลใดก็ได้"}
+},
+{
+name:"คำกริยา",ghost:"🧛",ghostName:"ผีตานี",
+tag:"บอกการกระทำ อาการ สภาพ หรือคุณสมบัติ",
+pages:[
+{title:"คำกริยาคืออะไร?",body:`<p><b>คำกริยา</b> เป็นหัวใจสำคัญของประโยค ใช้บอกอาการ การกระทำ สภาพ หรือคุณสมบัติของประธาน</p><div class="example">นักเรียน <b>อ่าน</b>หนังสือ — บอกการกระทำ<br>ฝน <b>ตก</b> — บอกเหตุการณ์<br>บ้าน <b>สวย</b> — บอกคุณสมบัติ</div><p>คำกริยาแบ่งเป็นคำกริยาที่มีหน่วยกรรม และคำกริยาที่ไม่มีหน่วยกรรม</p>`},
+{title:"คำกริยาที่มีหน่วยกรรม",body:`<p><b>สกรรมกริยา</b> ต้องมีกรรมตามหลังเพื่อให้ข้อความสมบูรณ์ กรรมเป็นผู้รับการกระทำ ตัวอย่างคำ: กิน ฟัง อ่าน เกี่ยว</p><div class="example">นักเรียนกิน<b>ขนม</b> • ครูอ่าน<b>หนังสือ</b> • พ่อฟัง<b>ข่าว</b> • ชาวนาเกี่ยว<b>ข้าว</b></div><p><b>กริยาทวิกรรม</b> มีกรรม 2 ส่วน โดยเกี่ยวข้องกับผู้รับและสิ่งที่ถูกกระทำหรือส่งมอบ เช่น สอน ป้อน ให้ แจก อบรม</p><div class="example">ครูสอน<b>หนังสือ</b>ให้<b>นักเรียน</b> • พ่อให้<b>เงิน</b><b>ลูก</b></div><div class="analysis">วิธีสังเกต: หา “คำกริยา” แล้วถามว่า ทำอะไร? ทำต่อสิ่งใด? หรือมีผู้รับอะไร?</div>`},
+{title:"อกรรมกริยาและกริยาคุณศัพท์",body:`<p><b>อกรรมกริยา</b> ไม่ต้องมีกรรมมารับ ก็สื่อความหมายได้ เช่น หัวเราะ ตก ขึ้น ตาย ยืน เดิน ดีใจ เสียใจ วิตกกังวล เซ็ง สนุก ปวดท้อง</p><div class="example">เด็กกำลังหัวเราะ • ฝนตกหนัก • นักเรียนยืนเข้าแถว • ฉันปวดท้อง</div><p><b>กริยาคุณศัพท์</b> แสดงคุณสมบัติหรือสภาพ เช่น ดี สวย ว่องไว สูง</p><ul><li>เปรียบเทียบได้ด้วย “กว่า” หรือ “ที่สุด”: สวยกว่า, เก่งที่สุด</li><li>ตามหลังคำลักษณนามได้: สุนัขตัวอ้วน, คุณแม่คนเก่ง</li></ul>`},
+{title:"กริยาต้องเติมเต็ม กริยานำ และกริยาตาม",body:`<p><b>กริยาต้องเติมเต็ม (วิกตรรถกริยา)</b> ต้องมีส่วนเติมเต็มตามหลังเพื่อให้ความหมายสมบูรณ์ เช่น เป็น เหมือน คล้าย เท่า ใช่ มี เกิด ปรากฏ</p><div class="example">สมเกียรติเป็น<b>ครู</b> • เขาเหมือน<b>พ่อ</b> • เขามี<b>ความสามารถ</b></div><p><b>กริยานำ</b> ต้องอยู่หน้ากริยาอื่น เช่น ชอบ พลอย พยายาม อยาก ฝึก หัด ตั้งใจ ห้าม ช่วย กรุณา วาน</p><div class="example">ฉัน<b>อยาก</b>อ่านหนังสือ • กรุณา<b>ปิด</b>ประตู</div><p><b>กริยาตาม</b> อยู่หลังกริยาอื่น เช่น ไป มา ขึ้น ลง เข้า ออก</p><div class="example">เขานั่ง<b>ลง</b> • เด็กเดิน<b>เข้า</b>ห้องเรียน • เขาวิ่ง<b>ออก</b>ไป</div>`}
+],
+quiz:{q:"ในประโยค “ครูอ่านหนังสือ” คำว่า “อ่าน” เป็นกริยาชนิดใด?",options:["อกรรมกริยา","สกรรมกริยา","กริยาตาม","กริยาคุณศัพท์"],answer:1,explain:"“อ่าน” มีกรรมคือ “หนังสือ” รับการกระทำ จึงเป็นสกรรมกริยา"}
+},
+{
+name:"คำช่วยกริยา",ghost:"🧙",ghostName:"ผีกระสือผู้รู้คาถา",
+tag:"ช่วยบอกเวลา ระยะเวลา มาลา และวาจก",
+pages:[
+{title:"คำช่วยกริยาคืออะไร?",body:`<p><b>คำช่วยกริยา</b> หรือ <b>กริยานุเคราะห์</b> ไม่ใช่คำกริยาหลักและไม่ปรากฏตามลำพัง โดยอยู่ร่วมกับหรืออยู่หน้าคำกริยา เพื่อช่วยบอกความหมายให้ชัดเจนขึ้น</p><div class="example">ฉัน<b>จะ</b>ไปพรุ่งนี้ • ผม<b>กำลัง</b>อ่านหนังสือ</div><div class="analysis">ถามว่า คำนี้ช่วยบอกเวลา ระยะเวลา ท่าทีของผู้พูด หรือว่าประธานรับการกระทำหรือไม่</div>`},
+{title:"ช่วยบอกอดีต อนาคต และระยะเวลา",body:`<p><b>บอกอดีตหรืออนาคต:</b> “ได้” ช่วยแสดงการกระทำที่เกิดขึ้นแล้ว ส่วน “จะ” แสดงการกระทำที่จะเกิดขึ้น</p><div class="example">หมอ<b>ได้</b>ผ่าเอาเนื้อร้ายออกแล้ว • ฉัน<b>จะ</b>ไปหาเขาพรุ่งนี้</div><p><b>บอกระยะเวลา:</b> กำลัง มัก เพิ่ง บอกว่าการกระทำกำลังเกิด เพิ่งเกิด หรือเกิดเป็นประจำ</p><div class="example">ผม<b>กำลัง</b>อ่านหนังสือ • นาฬิกา<b>เพิ่ง</b>ตาย • เขา<b>มัก</b>ออกกำลังกายตอนเช้า</div>`},
+{title:"แสดงมาลาและวาจก",body:`<p><b>แสดงมาลา</b> ช่วยแสดงลักษณะข้อความ เช่น คาดคะเน ขอร้อง หรือบังคับ ตัวอย่างคำ: คง จวน ยัง โปรด ต้อง</p><div class="example">เย็นนี้ฝน<b>คง</b>ตก • เรา<b>จวน</b>ถึงบ้านแล้ว • <b>โปรด</b>งดสูบบุหรี่ • คุณ<b>ต้อง</b>คืนเงิน</div><p><b>แสดงวาจก</b> แสดงว่าประธานเป็นผู้รับการกระทำจากผู้อื่น เช่น ถูก โดน</p><div class="example">เขา<b>ถูก</b>ลงโทษ • เจ้าตูบ<b>โดน</b>ขังกรง • บ้าน<b>ถูก</b>ทำลาย</div>`},
+{title:"คำช่วยกริยาที่ใช้กับ ไม่",body:`<p>คำช่วยกริยาบางคำใช้ประกอบกับ <b>ไม่</b> เพื่อช่วยแสดงความหมายปฏิเสธการกระทำ</p><div class="example">เขา<b>ไม่ค่อย</b>ออกกำลังกาย • งานนี้เขา<b>ไม่ยักกะ</b>มา</div><div class="analysis"><b>สรุปการสังเกต:</b> พิจารณาคำที่อยู่ร่วมกับกริยา ว่าช่วยบอกเวลา ระยะเวลา มาลา วาจก หรือการปฏิเสธ</div>`}
+],
+quiz:{q:"ในประโยค “ผมกำลังอ่านหนังสือ” คำว่า “กำลัง” ทำหน้าที่อะไร?",options:["บอกระยะเวลาของการกระทำ","บอกความเป็นเจ้าของ","แสดงวาจก","เชื่อมประโยค"],answer:0,explain:"“กำลัง” แสดงว่าการอ่านกำลังเกิดขึ้น"}
+},
+{
+name:"คำวิเศษณ์",ghost:"🎭",ghostName:"ผีโพงนักแสดง",
+tag:"ขยายกริยาให้เห็นรายละเอียดชัดขึ้น",
+pages:[
+{title:"คำวิเศษณ์คืออะไร?",body:`<p>ตามเนื้อหาบทเรียนนี้ <b>คำวิเศษณ์</b> ทำหน้าที่เป็นหน่วยขยายกริยา มักปรากฏหลังคำกริยา เพื่อขยายความหมายของการกระทำให้ชัดเจนขึ้น</p><div class="example">รถติด<b>จัง</b> • น้องนอน<b>แล้ว</b> • เธอขับรถ<b>อย่างระมัดระวัง</b></div><div class="analysis">ลองหากริยาก่อน แล้วถามว่า “คำไหนช่วยบอกรายละเอียดของการกระทำ?”</div>`},
+{title:"คำวิเศษณ์สามัญและขยายเฉพาะ",body:`<p><b>คำวิเศษณ์สามัญ</b> ขยายคำกริยาทั่วไปเพื่อบอกลักษณะ อาการ หรือรายละเอียด</p><div class="example">วันนี้รถติดจัง • แจ๋วมาตรงเวลาทีเดียว • น้องนอนแล้ว • แม่ทำกับข้าวเอง • แก้วตาขยันที่สุด • เธอขับรถอย่างระมัดระวัง</div><p><b>คำวิเศษณ์ขยายเฉพาะ</b> เน้นลักษณะหรือระดับให้เด่นชัด เช่น แดงแจ๋ เปียกซ่ก ดำปี๋ เหลืองอ๋อย ยาวเฟื้อย แหลมเปี๊ยบ คลานกระดื๊บ ๆ แพงหูฉี่ คมกริบ กลมดิ๊ก</p><div class="example">เสื้อแดงแจ๋ • เสื้อผ้าเปียกซ่ก • มีดคมกริบ • ลูกบอลกลมดิ๊ก</div>`},
+{title:"คำวิเศษณ์แสดงคำถาม",body:`<p>ใช้ถามเกี่ยวกับการกระทำ เพื่อทราบเหตุผล สาเหตุ หรือรายละเอียดของเหตุการณ์ เช่น <b>ทำไม เหตุใด เพราะอะไร ไย ไฉน เมื่อไร อย่างไร</b></p><div class="example">ทำไมสัตว์ป่าบางชนิดจึงสูญพันธุ์? • เธอจะเดินทางเมื่อไร? • นักเรียนทำงานอย่างไร?</div><div class="analysis">“ทำไม/เหตุใด” มักถามเหตุผล “เมื่อไร” ถามเวลา และ “อย่างไร” ถามวิธีการ</div>`},
+{title:"คำวิเศษณ์บอกเวลา",body:`<p>ใช้บอกช่วงเวลาที่เกิดเหตุการณ์หรือการกระทำ เช่น <b>เช้า สาย บ่าย ค่ำ ดึก วันนี้ พรุ่งนี้ มะรืนนี้ ปีที่แล้ว ปีนี้ ปีหน้า ขณะนี้ ตะกี้ ปีเก่า ปีก่อน ต้นปี ท้ายปี</b></p><div class="example">พรุ่งนี้เขาจะไปเชียงใหม่ • นักกีฬาจะซ้อมวิ่งกันตอนเช้า • กลางคืนบริษัทต่าง ๆ ไม่เปิดทำการ</div><div class="note">ในข้อความต้นทางที่ส่งมา ตัวอย่างสุดท้ายของหัวข้อนี้ถูกตัด พี่จึงไม่เติมประโยคส่วนที่หายไป</div>`}
+],
+quiz:{q:"คำว่า “คมกริบ” ในประโยค “มีดเล่มนี้คมกริบ” เป็นคำวิเศษณ์ชนิดใด?",options:["คำวิเศษณ์สามัญ","คำวิเศษณ์ขยายเฉพาะ","คำวิเศษณ์แสดงคำถาม","คำวิเศษณ์บอกเวลา"],answer:1,explain:"“คมกริบ” เน้นลักษณะให้เด่นชัดเป็นพิเศษ"}
+},
+{
+name:"คำที่เกี่ยวกับจำนวน",ghost:"💀",ghostName:"ผีตายโหงผู้เฝ้าตัวเลข",
+tag:"บอกจำนวน ปริมาณ หรือลำดับ",
+pages:[
+{title:"คำที่เกี่ยวกับจำนวนคืออะไร?",body:`<p>คำที่เกี่ยวกับจำนวนมีความหมายเกี่ยวข้องกับ <b>จำนวน ปริมาณ หรือลำดับ</b> ใช้บอกว่ามีจำนวนเท่าใด อยู่ในลำดับใด หรือมีปริมาณมากน้อยเพียงใด แบ่งเป็น 4 ชนิด</p><div class="example">หนังสือ 2 เล่ม • สอบได้ที่หนึ่ง • เกือบ 100 คน • 100 คนถ้วน</div>`},
+{title:"คำบอกจำนวนและคำบอกลำดับ",body:`<p><b>คำบอกจำนวน</b> บอกจำนวน มักปรากฏหน้าคำลักษณนามและคำนาม เช่น หนึ่ง สอง สาม สี่ ทุก หลาย กี่ บาง ครึ่ง</p><div class="example">แม่ครัวทำอาหาร 5 อย่าง • ไก่ย่างครึ่งตัว • หนังสือ 2 เล่ม • ลูก 3 คน</div><p><b>คำบอกลำดับ</b> แสดงลำดับหรือตำแหน่ง เช่น แรก หน้า หลัง กลาง ที่หนึ่ง ที่สอง ที่สาม ที่โหล่ บ๊วย รั้งท้าย</p><div class="example">เขาสอบได้ที่หนึ่ง • ซื้อบ้านหลังแรก • เข้าเส้นชัยเป็นคนสุดท้าย</div>`},
+{title:"คำหน้าจำนวนและคำหลังจำนวน",body:`<p><b>คำหน้าจำนวน</b> อยู่หน้าคำบอกจำนวน และมีคำลักษณนามตามหลัง เช่น อีก สัก ตั้ง ทั้ง เพียง ประมาณ เกือบ ราว ๆ</p><div class="example">ซื้อผ้าอีก 2 ตัว • มีลูกตั้ง 6 คน • มีกำไรราว 50 ล้านบาท • เกือบ 100 คน</div><p><b>คำหลังจำนวน</b> อยู่หลังคำบอกจำนวน ใช้แสดงจำนวนเกินมา โดยประมาณ หรือครบพอดี ได้แก่ กว่า เศษ พอดี ถ้วน</p><div class="example">พันกว่าคน • 3 หลาเศษ ๆ • 3 กิโลพอดี • 100 คนถ้วน</div>`},
+{title:"ฝึกแยกคำในประโยค",body:`<div class="analysis"><b>นักเรียนเกือบ 100 คน:</b> “เกือบ” อยู่หน้าจำนวน จึงเป็นคำหน้าจำนวน</div><div class="analysis"><b>มีคนมาชุมนุมพันกว่าคน:</b> “กว่า” อยู่หลังจำนวนและบอกจำนวนเกินมา จึงเป็นคำหลังจำนวน</div><div class="analysis"><b>เขาสอบได้ที่หนึ่ง:</b> “ที่หนึ่ง” บอกตำแหน่งในลำดับ จึงเป็นคำบอกลำดับ</div>`}
+],
+quiz:{q:"ในประโยค “นักเรียนมีจำนวนเกือบ 100 คน” คำว่า “เกือบ” เป็นคำชนิดใด?",options:["คำบอกจำนวน","คำบอกลำดับ","คำหน้าจำนวน","คำหลังจำนวน"],answer:2,explain:"“เกือบ” อยู่หน้าจำนวน 100 จึงเป็นคำหน้าจำนวน"}
+},
+{
+name:"คำบอกกำหนด",ghost:"👁️",ghostName:"ผีตาโบ๋",
+tag:"กำหนดหรือชี้ว่าหมายถึงคำนามใด",
+pages:[
+{title:"คำบอกกำหนดคืออะไร?",body:`<p><b>คำบอกกำหนด</b> เป็นคำขยายนามที่อยู่ท้ายสุดของนามวลี ทำหน้าที่กำหนดหรือระบุความหมายของคำนามให้ชัดเจนขึ้น แบ่งเป็นชนิดชี้เฉพาะและไม่ชี้เฉพาะ</p><div class="example">รถคันนี้ • บ้านหลังนั้น • รถคันอื่น</div>`},
+{title:"คำบอกกำหนดชี้เฉพาะ",body:`<p>คำบอกกำหนดชี้เฉพาะ หรือ <b>นิยมวิเศษณ์</b> ใช้กำหนดว่าคำนามอยู่ระยะใกล้หรือไกลจากผู้พูด มี 8 คำ ได้แก่ <b>นี่ นั่น โน่น นู่น นี้ นั้น โน้น นู้น</b></p><p><b>นี่ นั่น โน่น นู่น</b> ใช้ตามหลังคำนามได้</p><div class="example">นิยายนี่ใครเป็นคนแต่ง? • เสื้อโน่นยังไม่ได้ซัก • ลากเก้าอี้โน่นมาให้หน่อย</div>`},
+{title:"คำชี้เฉพาะที่มีลักษณนามคั่น",body:`<p><b>นี้ นั้น โน้น นู้น</b> ใช้ตามหลังคำนาม และอาจมีคำลักษณนามคั่นกลาง</p><div class="example">บ้านนั้นอยู่มาหลายปีแล้ว • รถคันนี้ใช้งานมานาน • หนังสือเล่มโน้นน่าสนใจ</div><div class="analysis">ใน “รถคันนี้” คำว่า “คัน” เป็นลักษณนาม ส่วน “นี้” ช่วยชี้เฉพาะรถคันที่กล่าวถึง</div>`},
+{title:"คำบอกกำหนดไม่ชี้เฉพาะ",body:`<p>คำบอกกำหนดไม่ชี้เฉพาะ หรือ <b>อนิยมวิเศษณ์</b> ไม่ระบุคำนามอย่างเฉพาะเจาะจง เช่น <b>อื่น อื่น ๆ ต่าง ๆ นานา ใด ไหน</b></p><p>อาจอยู่ติดหลังคำนาม หรือมีคำลักษณนามคั่น</p><div class="example">บ้านไหนถูกโจรขึ้น? • หนังสือเล่มไหนน่าสนใจ? • รถคันอื่นเข้ามา • ธัญพืชชนิดต่าง ๆ มีประโยชน์</div><div class="note">ให้ดูบริบทว่าเป็นการชี้เฉพาะหรือไม่ได้กำหนดแน่นอน</div>`}
+],
+quiz:{q:"ในวลี “หนังสือเล่มโน้น” คำว่า “โน้น” เป็นคำบอกกำหนดชนิดใด?",options:["ชี้เฉพาะ","ไม่ชี้เฉพาะ","คำหน้าจำนวน","คำลงท้าย"],answer:0,explain:"“โน้น” ใช้ชี้เฉพาะสิ่งที่อยู่ไกล"}
+},
+{
+name:"คำบุพบท",ghost:"🕷️",ghostName:"ผีกองกอย",
+tag:"บอกตำแหน่ง หน้าที่ และความสัมพันธ์",
+pages:[
+{title:"คำบุพบทคืออะไร?",body:`<p><b>คำบุพบท</b> หรือบุรพบท ปรากฏอยู่หน้านามวลีและประกอบเป็นบุพบทวลี ทำหน้าที่บอกตำแหน่ง หน้าที่ หรือความเกี่ยวข้องของคำในประโยค</p><div class="example">คำตัวอย่าง: กับ แก่ แด่ ต่อ เพื่อ เผื่อ สำหรับ บน ใน ใต้ ล่าง เหนือ ด้วย โดย ตาม ของ</div><div class="analysis">“หนังสืออยู่ในกระเป๋า” — “ในกระเป๋า” บอกตำแหน่งของหนังสือ</div>`},
+{title:"บอกสถานที่ สาเหตุ และความมุ่งหมาย",body:`<ul><li><b>ตำแหน่งหรือสถานที่:</b> ใน บน ใต้ เหนือ ล่าง — เขานอนบนเตียง • แมวอยู่ใต้โต๊ะ</li><li><b>สาเหตุ:</b> แสดงเหตุที่ทำให้เกิดเหตุการณ์หรือความรู้สึก — เขามีกำลังใจต่อสู้โรคร้ายเพราะคำพูดของเธอ</li><li><b>ความมุ่งหมาย:</b> แสดงจุดประสงค์ เช่น เพื่อ — น้องตั้งใจเรียนเพื่ออนาคต • พ่อทำงานเพื่อลูก</li></ul>`},
+{title:"บอกเจ้าของ ผู้ร่วมกระทำ และผู้รับประโยชน์",body:`<ul><li><b>ความเป็นเจ้าของ:</b> ของ — ปากกาแดงของฉัน • หนังสือของคุณครู</li><li><b>ผู้ทำกริยาร่วมกัน:</b> กับ — ไปเที่ยวกับเพื่อน • มาโรงเรียนกับน้อง</li><li><b>ผู้รับผลประโยชน์:</b> แก่ แด่ — พระราชทานพรแก่ปวงชน • ครูมอบรางวัลแก่นักเรียน</li></ul>`},
+{title:"บอกเวลา เครื่องมือ และการเปรียบเทียบ",body:`<ul><li><b>เวลา:</b> เมื่อ — เขากลับมาถึงเมืองไทยเมื่อวันก่อน</li><li><b>เครื่องมือที่ใช้:</b> ด้วย โดย — เขาจับปลาด้วยมือเปล่า • เขาเดินทางโดยรถไฟ</li><li><b>สิ่งที่นำมาเปรียบเทียบ:</b> กว่า — เขาสูงกว่าน้อง • ย่ารักเอ๋ยิ่งกว่าผม</li></ul><div class="note">คำเดียวกันอาจทำหน้าที่ต่างกันตามบริบท ควรดูความสัมพันธ์กับคำอื่นทั้งประโยค</div>`}
+],
+quiz:{q:"ในประโยค “พ่อทำงานเพื่อลูก” คำว่า “เพื่อ” แสดงความสัมพันธ์ใด?",options:["ตำแหน่ง","ความมุ่งหมาย","ความเป็นเจ้าของ","เครื่องมือ"],answer:1,explain:"“เพื่อ” แสดงจุดประสงค์หรือเป้าหมาย"}
+},
+{
+name:"คำเชื่อม",ghost:"🧟",ghostName:"ผีโพงพาง",
+tag:"เชื่อมคำ วลี และประโยคให้สัมพันธ์กัน",
+pages:[
+{title:"คำเชื่อมคืออะไร?",body:`<p><b>คำเชื่อม</b> ใช้เชื่อมคำ วลี หรือประโยคเข้าด้วยกัน ทำให้ข้อความต่อเนื่องและสื่อความสัมพันธ์ชัดเจน แบ่งเป็น 4 ชนิด</p><div class="example">พ่อและแม่ • ฉันอยากไปแต่ไม่มีเวลา • เขาบอกว่าเขาจะมา</div>`},
+{title:"คำเชื่อมสมภาค",body:`<p><b>คำเชื่อมสมภาค</b> เชื่อมหน่วยภาษาชนิดเดียวกัน เช่น คำนามกับคำนาม สรรพนามกับสรรพนาม หรือประโยคย่อยกับประโยคย่อย ตัวอย่างคำ: <b>กับ และ หรือ แต่</b></p><div class="example">พ่อและแม่เป็นผู้ให้กำเนิดลูก • เธอชอบชาบูหรือหมูกระทะ • ฉันกับเขาช่วยกันตั้งบริษัท • ฉันอยากไปเที่ยวแต่ไม่มีเวลา</div><div class="analysis">“แต่” เชื่อมข้อความที่มีความหมายขัดแย้งกัน</div>`},
+{title:"คำเชื่อมอนุประโยค",body:`<p>คำเชื่อมอนุประโยคนำหน้าอนุประโยคในประโยคซ้อน โดยอนุประโยคเป็นส่วนหนึ่งของประโยคหลัก</p><ul><li><b>นามานุประโยค:</b> ทำหน้าที่เป็นประธาน กรรม หรือส่วนเติมเต็ม เช่น ที่ ว่า ให้ — เขาบอกว่าเขาจะมา</li><li><b>คุณานุประโยค:</b> ขยายคำนามหรือสรรพนาม เช่น ที่ ซึ่ง อัน — เด็กที่ได้รับรางวัลเป็นน้องฉัน</li><li><b>วิเศษณานุประโยค:</b> ขยายกริยาหรือข้อความ แสดงเหตุ เงื่อนไข เวลา หรือขอบเขต เช่น เพราะ ถ้า จน กระทั่ง เมื่อ ขณะที่</li></ul><div class="example">เขาไม่มาทำงานเพราะลูกไม่สบาย • เราจะไปถ้าฝนไม่ตก • เขาอ่านหนังสือขณะที่เพื่อนทำงาน</div>`},
+{title:"คำเชื่อมเสริมและสัมพันธสาร",body:`<p><b>คำเชื่อมเสริม</b> เพิ่มความสัมพันธ์ระหว่างหน่วยภาษาให้ชัดขึ้น เช่น จึง เลย ถึง ก็ แบบว่า</p><div class="example">เหตุใดจึงมานั่งเศร้าอยู่คนเดียว? • ฉันก็อยากรู้เรื่องนี้</div><p><b>คำเชื่อมสัมพันธสาร</b> เชื่อมตั้งแต่สองประโยคขึ้นไปให้เป็นข้อความต่อเนื่อง เช่น กล่าวคือ อย่างไรก็ตาม แม้กระนั้น ในที่สุด ทว่า แต่ทว่า ทั้งนี้ อนึ่ง</p><div class="analysis">“กล่าวคือ” เชื่อมข้อความเพื่อขยายความจากข้อความก่อนหน้าให้ชัดเจนขึ้น</div>`}
+],
+quiz:{q:"ในประโยค “เด็กที่ได้รับรางวัลเป็นน้องฉัน” คำว่า “ที่” นำหน้าข้อความที่ขยายคำนาม เป็นคำเชื่อมชนิดใด?",options:["สมภาค","นามานุประโยค","คุณานุประโยค","สัมพันธสาร"],answer:2,explain:"“ที่ได้รับรางวัล” ขยายคำนาม “เด็ก” จึงเป็นคุณานุประโยค"}
+},
+{
+name:"คำลงท้าย",ghost:"🕯️",ghostName:"ผีแม่ม่าย",
+tag:"แสดงเจตนา ความรู้สึก หรือมารยาท",
+pages:[
+{title:"คำลงท้ายคืออะไร?",body:`<p><b>คำลงท้าย</b> ปรากฏอยู่ท้ายสุดของประโยค โดยทั่วไปไม่มีความหมายเด่นชัดในตัวเอง แต่ทำหน้าที่แสดงเจตนา ความรู้สึก หรือมารยาทของผู้พูด</p><div class="example">ไปด้วยกัน<b>นะ</b> • รถมาแล้ว<b>ครับ</b></div>`},
+{title:"คำลงท้ายแสดงทัศนภาวะ",body:`<p>ใช้แสดงเจตนา ความรู้สึก หรือท่าทีของผู้พูด เช่น ออกคำสั่ง แสดงความโกรธ ชักชวน ขอร้อง โน้มน้าว หรือออดอ้อน ตัวอย่างคำ: <b>ซิ นะ เถอะ ล่ะ</b></p><div class="example">เข้ามาซิ • ไปด้วยกันนะ • ไปกันเถอะ • เงินทอนล่ะ • ทำไมเขาไม่มาล่ะ</div><div class="analysis">เปลี่ยนคำลงท้ายแล้วท่าทีของผู้พูดอาจเปลี่ยน แม้ข้อความหลักจะใกล้เคียงกัน</div>`},
+{title:"คำลงท้ายแสดงมารยาท",body:`<p>ใช้แสดงความสุภาพหรือไม่สุภาพ รวมถึงสถานะและความสัมพันธ์ระหว่างผู้พูดกับผู้ฟัง</p><ul><li><b>สุภาพ:</b> ครับ ค่ะ ขอรับ ขา — รถมาแล้วครับ • พร้อมแล้วใช่ไหมคะ</li><li><b>ไม่สุภาพในบริบทที่ไม่เหมาะ:</b> วะ ย่ะ</li><li><b>แสดงน้ำเสียงและความสัมพันธ์:</b> จ๋า จ๊ะ</li></ul><div class="note">เลือกใช้คำลงท้ายโดยคำนึงถึงผู้ฟัง สถานการณ์ และมารยาท</div>`}
+],
+quiz:{q:"คำว่า “ครับ” ในประโยค “รถมาแล้วครับ” เป็นคำลงท้ายชนิดใด?",options:["แสดงทัศนภาวะ","แสดงมารยาท","บอกจำนวน","คำเชื่อม"],answer:1,explain:"“ครับ” ใช้แสดงความสุภาพ"}
+},
+{
+name:"คำอุทาน",ghost:"😱",ghostName:"ผีตาโบ๋ขี้ตกใจ",
+tag:"เปล่งออกมาเพื่อแสดงอารมณ์และความรู้สึก",
+pages:[
+{title:"คำอุทานคืออะไร?",body:`<p><b>คำอุทาน</b> คือคำที่เปล่งออกมาเพื่อแสดงอารมณ์และความรู้สึก เช่น ดีใจ ตกใจ สะเทือนใจ เจ็บปวด เห็นใจ สงสัย หรือประหลาดใจ มักมีเครื่องหมายอัศเจรีย์ <b>!</b> กำกับ</p><div class="example">โอ๊ย! • ไชโย! • ว้าย! • โอ้โห!</div>`},
+{title:"อุทานแสดงสะเทือนใจ ตกใจ ดีใจ และเห็นใจ",body:`<ul><li><b>สะเทือนใจ:</b> แสดงความสะเทือนใจหรือประหลาดใจต่อเหตุการณ์ เช่น ตายจริง! โธ่!</li><li><b>ตกใจ:</b> ใช้เมื่อพบเหตุการณ์กะทันหัน เช่น ว้าย! ช่วยด้วย!</li><li><b>ดีใจ:</b> แสดงความยินดี เช่น ไชโย!</li><li><b>เห็นใจ:</b> แสดงความสงสารหรือเสียใจ เช่น โถ! ไม่น่าเลย • โธ่! ไม่น่าเป็นเช่นนี้เลย</li></ul>`},
+{title:"อุทานแสดงสงสัย ประหลาดใจ และเจ็บปวด",body:`<ul><li><b>สงสัย:</b> แสดงความไม่แน่ใจ เช่น ฮึ!</li><li><b>ประหลาดใจ:</b> แสดงความแปลกใจ เช่น โอ้โฮ! โอ้โห!</li><li><b>เจ็บปวด:</b> ใช้เมื่อรู้สึกเจ็บ เช่น โอ๊ย! โอ้ย!</li></ul><div class="example">เห็นเพื่อนชนะ: “ไชโย!” • ของตกใส่เท้า: “โอ๊ย!” • เห็นสิ่งน่าทึ่ง: “โอ้โห!”</div><div class="analysis">คำอุทานสั้น ๆ ช่วยถ่ายทอดความรู้สึก แต่ต้องดูสถานการณ์ประกอบด้วย</div>`}
+],
+quiz:{q:"เมื่อเห็นเพื่อนชนะการแข่งขันแล้วร้องว่า “ไชโย!” เป็นคำอุทานแสดงอารมณ์ใด?",options:["สงสัย","ดีใจ","เจ็บปวด","เห็นใจ"],answer:1,explain:"“ไชโย!” ใช้แสดงความยินดีหรือความดีใจ"}
+},
+{
+name:"คำปฏิเสธ",ghost:"🏚️",ghostName:"ผีเฝ้าประตูคำสาป",
+tag:"บอกปัดหรือไม่ยอมรับข้อความและการกระทำ",
+pages:[
+{title:"คำปฏิเสธคืออะไร?",body:`<p><b>คำปฏิเสธ</b> ใช้บอกปัดหรือไม่ยอมรับข้อความ การกระทำ หรือเหตุการณ์ ทำให้ข้อความมีความหมายในเชิงปฏิเสธ แบ่งเป็น 2 ชนิด</p><div class="example">ฉัน<b>ไม่</b>ไป • ถามว่าเหนื่อยไหม ตอบว่า<b>เปล่า</b></div>`},
+{title:"คำปฏิเสธกริยา",body:`<p><b>คำปฏิเสธกริยา</b> ใช้ปฏิเสธคำกริยา มักปรากฏหน้าคำกริยา เพื่อแสดงว่าประธานไม่ได้กระทำสิ่งนั้น ตัวอย่างคำ: <b>มิ ไม่ หาไม่</b></p><div class="example">ผมมิใช่คนดีอะไร • ท้องฟ้าไม่แจ่มใส • เขาเดินไม่ระวัง • เธอจะสำนึกผิดก็หาไม่</div><div class="analysis">ให้สังเกตว่าคำปฏิเสธไปปฏิเสธการกระทำหรือกริยาส่วนใด</div>`},
+{title:"คำปฏิเสธข้อความ",body:`<p><b>คำปฏิเสธข้อความ</b> ใช้ปฏิเสธข้อความหรือคำถาม มักใช้ตอบบทสนทนา เช่น <b>หามิได้ มิได้ เปล่า</b></p><div class="example">ถาม: คุณมากับภรรยาหรือ? ตอบ: หามิได้<br>ถาม: คุณดูท่าทางเหนื่อยนะ ตอบ: เปล่า<br>ถาม: คุณไม่ได้ไปโรงเรียนใช่ไหม? ตอบ: มิได้</div><div class="note">จำแนกจากหน้าที่ในประโยค: คำที่ปฏิเสธกริยาเป็นคำปฏิเสธกริยา ส่วนคำที่ใช้ปฏิเสธคำถามหรือข้อความเป็นคำปฏิเสธข้อความ</div>`}
+],
+quiz:{q:"ตอบว่า “หามิได้” เมื่อถูกถามว่า “คุณมากับภรรยาหรือ” เป็นคำปฏิเสธชนิดใด?",options:["คำปฏิเสธกริยา","คำปฏิเสธข้อความ","คำช่วยกริยา","คำวิเศษณ์"],answer:1,explain:"“หามิได้” ใช้ปฏิเสธข้อความในบทสนทนา"}
+}
+];
+
+let currentRoom=0,currentPage=0;
+const learned=new Set();
+const $=id=>document.getElementById(id);
+
+function showScreen(id){
+  ["home","mapScreen","lessonScreen","quizScreen"].forEach(screenId=>{
+    $(screenId).hidden=screenId!==id;
+  });
+}
+
+function drawMap(){
+  const ghosts=rooms.map(room=>room.ghost);
+  $("roomMap").replaceChildren();
+
+  rooms.forEach((room,i)=>{
+    const button=document.createElement("button");
+    button.className="room";
+    button.setAttribute("aria-label",`ห้อง ${i+1}: ${room.name}`);
+
+    const number=document.createElement("span");
+    number.className="room-number";
+    number.textContent=i+1;
+
+    const ghost=document.createElement("span");
+    ghost.className="room-ghost";
+    ghost.textContent=ghosts[i];
+
+    const name=document.createElement("span");
+    name.className="room-name";
+    name.textContent=room.name;
+
+    const job=document.createElement("span");
+    job.className="room-job";
+    job.textContent=room.tag;
+
+    const status=document.createElement("span");
+    status.className="room-status";
+    status.textContent=learned.has(i)?"✅ เรียนแล้ว · แตะทบทวนได้":"🚪 แตะเพื่อเข้าเรียน";
+
+    button.append(number,ghost,name,job,status);
+    button.onclick=()=>openRoom(i);
+    $("roomMap").appendChild(button);
+  });
+  $("learned").textContent=learned.size;
+}
+
+function openRoom(index){
+  currentRoom=index;
+  currentPage=0;
+  drawPage();
+  showScreen("lessonScreen");
+}
+
+function drawPage(){
+  const room=rooms[currentRoom];
+  const page=room.pages[currentPage];
+
+  $("lessonRoom").textContent=`🚪 ห้อง ${currentRoom+1}: ${room.name}`;
+  $("teacherFace").textContent=room.ghost;
+  $("teacherName").textContent=room.ghostName;
+  $("teacherText").textContent=`ยินดีต้อนรับ! มาเรียนเรื่อง${room.name}ไปทีละขั้นกันนะ`;
+  $("lessonTitle").textContent=page.title;
+  $("pageContent").innerHTML=page.body;
+  $("pageNumber").textContent=`หน้า ${currentPage+1} / ${room.pages.length}`;
+  $("lessonProgress").style.width=`${((currentPage+1)/room.pages.length)*100}%`;
+  $("previousPage").disabled=currentPage===0;
+  $("nextPage").textContent=currentPage===room.pages.length-1
+    ?"จบบทเรียน →":"หน้าถัดไป →";
+}
+
+function completeLesson(){
+  learned.add(currentRoom);
+  drawMap();
+  const wantsQuiz=confirm("เรียนห้องนี้ครบแล้ว! อยากลองทำภารกิจทบทวนกับผีน้อยไหม?");
+  if(wantsQuiz)startQuiz();
+  else showScreen("mapScreen");
+}
+
+function startQuiz(){
+  const room=rooms[currentRoom];
+  const quiz=room.quiz;
+  showScreen("quizScreen");
+  $("quizRoom").textContent=`👻 ภารกิจเสริม: ห้อง${room.name}`;
+  $("question").textContent=quiz.q;
+  $("feedback").className="feedback";
+  $("feedback").textContent="";
+  $("nextQuestion").hidden=true;
+  $("options").replaceChildren();
+
+  quiz.options.forEach((text,index)=>{
+    const button=document.createElement("button");
+    button.className="option";
+    button.textContent=`${index+1}. ${text}`;
+    button.onclick=()=>answerQuiz(index,button);
+    $("options").appendChild(button);
+  });
+}
+
+function answerQuiz(choice,chosenButton){
+  const quiz=rooms[currentRoom].quiz;
+  const buttons=[...$("options").children];
+  buttons.forEach(button=>button.disabled=true);
+
+  if(choice===quiz.answer){
+    chosenButton.classList.add("good");
+    $("feedback").className="feedback show good";
+    $("feedback").textContent=`✨ ถูกต้อง! ${quiz.explain}`;
+  }else{
+    chosenButton.classList.add("bad");
+    buttons[quiz.answer].classList.add("good");
+    $("feedback").className="feedback show bad";
+    $("feedback").textContent=`ลองทบทวนอีกครั้งนะ คำตอบคือ “${quiz.options[quiz.answer]}” — ${quiz.explain}`;
+  }
+  $("nextQuestion").hidden=false;
+}
+
+$("enter").onclick=()=>{drawMap();showScreen("mapScreen")};
+$("mapHome").onclick=()=>showScreen("home");
+$("backMap").onclick=()=>{drawMap();showScreen("mapScreen")};
+$("quizMap").onclick=()=>{drawMap();showScreen("mapScreen")};
+
+$("previousPage").onclick=()=>{
+  if(currentPage>0){currentPage--;drawPage()}
+};
+
+$("nextPage").onclick=()=>{
+  const room=rooms[currentRoom];
+  if(currentPage<room.pages.length-1){
+    currentPage++;
+    drawPage();
+  }else{
+    completeLesson();
+  }
+};
+
+$("nextQuestion").onclick=()=>{
+  drawMap();
+  showScreen("mapScreen");
+};
+</script>
+</body>
+</html>
